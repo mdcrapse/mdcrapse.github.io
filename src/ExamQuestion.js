@@ -1,15 +1,20 @@
 import react, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Accordion, Card } from "react-bootstrap";
-import { Stack, Button, TextField, Box } from "@mui/material";
+import { Stack, Button, TextField } from "@mui/material";
 import { useAccordionButton } from "react-bootstrap/AccordionButton";
 
-export default function ExamQuestion({ children, number = 1 }) {
+export default function ExamQuestion({ children, onRandomize, number = 1 }) {
   return (
     <div>
       <Accordion className="accordion" defaultActiveKey="1">
         <Card>
-          <Card.Header>Question {number}</Card.Header>
+          <Card.Header>
+            Question {number}
+            <Button type="button" onClick={onRandomize}>
+              Randomize
+            </Button>
+          </Card.Header>
           {children}
         </Card>
       </Accordion>
@@ -62,13 +67,19 @@ ExamQuestion.Answer = function Answer({ correctAnswer }) {
 };
 
 ExamQuestion.HintToggle = function HintToggle() {
-  return <ContextAwareToggle eventKey="0">Stuck? Review related resources or use a hint.</ContextAwareToggle>;
+  return (
+    <ContextAwareToggle eventKey="0">
+      Stuck? Review related resources or use a hint.
+    </ContextAwareToggle>
+  );
 };
 
-ExamQuestion.Hint = function Hint({ children }) {
+ExamQuestion.Hint = function Hint({ children, answer }) {
   return (
     <Accordion.Collapse eventKey="0">
-      <Card.Footer>{children}</Card.Footer>
+      <Card.Footer>
+        {children} <br /> The correct answer is {answer}
+      </Card.Footer>
     </Accordion.Collapse>
   );
 };
@@ -82,7 +93,7 @@ const buttonLikeLinkStyle = {
   fontFamily: "arial, sans-serif",
   /*input has OS specific font-family*/
   color: "#069",
-  textDecoration: "underline",
+  // textDecoration: "underline",
   cursor: "pointer",
   fontSize: "75%",
 };
@@ -92,7 +103,11 @@ const buttonLikeLinkStyle = {
  */
 function ContextAwareToggle({ children, eventKey }) {
   return (
-    <Button style={buttonLikeLinkStyle} type="button" onClick={useAccordionButton(eventKey)}>
+    <Button
+      style={buttonLikeLinkStyle}
+      type="button"
+      onClick={useAccordionButton(eventKey)}
+    >
       {children}
     </Button>
   );

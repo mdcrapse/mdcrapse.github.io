@@ -4,12 +4,35 @@ import ExamQuestion from "./ExamQuestion";
 import { Stack } from "react-bootstrap";
 import { MathJax } from "better-react-mathjax";
 
-export default function ExamQuestionnaire() {
+const QUESTIONS = [questionFloatExponent, questionBinaryToFraction, questionFractionToBinary];
+
+export default function ExamQuestionnaire({ questions = QUESTIONS, onCorrect }) {
+  const [correct, setCorrect] = useState([]);
+
+  useEffect(() => {
+    const newCorrect = Array(questions.length).fill(false);
+    setCorrect(newCorrect);
+    onCorrect(newCorrect);
+  }, []);
+
+  function onAnswerCorrect(isCorrect, index) {
+    const newCorrect = [...correct];
+    newCorrect[index] = isCorrect;
+    setCorrect(newCorrect);
+    onCorrect(newCorrect);
+  }
+
   return (
     <Stack direction="column" gap={3}>
-      <ExamDynamicQuestion randomQuestion={questionFloatExponent} />
-      <ExamDynamicQuestion randomQuestion={questionBinaryToFraction} />
-      <ExamDynamicQuestion randomQuestion={questionFractionToBinary} />
+      {questions.map((question, index) => (
+        <ExamDynamicQuestion
+          key={`ExamQuestion:${index}`}
+          id={`ExamQuestion:${index}`}
+          randomQuestion={question}
+          number={index + 1}
+          onCorrect={(isCorrect) => onAnswerCorrect(isCorrect, index)}
+        />
+      ))}
     </Stack>
   );
 }
@@ -32,9 +55,8 @@ function questionFloatExponent() {
       with the sign only if the integer is negative.`,
     answer: `${1 - (Math.pow(2, k - 1) - 1)}`,
     hint: (
-      <MathJax>
-        <span>{`\\(E = e - (2^{k-1}-1)\\) and \\(E = 1 - (2^{k-1}-1)\\).`}</span>{" "}
-        <br />
+      <MathJax dynamic={true}>
+        <span>{`\\(E = e - (2^{k-1}-1)\\) and \\(E = 1 - (2^{k-1}-1)\\).`}</span> <br />
         <span>{`\\(k = ${k}\\) and \\(e = 0\\)`}</span> <br />
         <span>{`\\(E = 1 - (2^{k-1}-1)\\)`}</span> <br />
         <span>{`\\(= 1 - (2^{${k}-1}-1)\\)`}</span> <br />
@@ -52,10 +74,7 @@ function questionFractionToBinary() {
   const n = randInt(d, 31) + 1;
   const bits = n.toString(2);
   const dotIdx = bits.length - shift;
-  const answer = `${bits.slice(0, dotIdx)}.${bits.slice(
-    dotIdx,
-    Math.max(bits.lastIndexOf("1"), dotIdx) + 1
-  )}`;
+  const answer = `${bits.slice(0, dotIdx)}.${bits.slice(dotIdx, Math.max(bits.lastIndexOf("1"), dotIdx) + 1)}`;
 
   return {
     description: `Convert the fractional value ${n}/${d} into binary. Your answer should consist only of the characters 1, 0, and the binary point ('.'). You should have no leading 0s.`,
@@ -82,7 +101,7 @@ function questionBinaryToFraction() {
   };
 }
 
-function ExamDynamicQuestion({ randomQuestion }) {
+function ExamDynamicQuestion({ randomQuestion, number, onCorrect, id }) {
   const [question, setQuestion] = useState({});
 
   useEffect(() => {
@@ -90,17 +109,13 @@ function ExamDynamicQuestion({ randomQuestion }) {
   }, []);
 
   return (
-    <ExamQuestion onRandomize={() => setQuestion(randomQuestion())} number={""}>
+    <ExamQuestion id={id} onRandomize={() => setQuestion(randomQuestion())} number={number}>
       <ExamQuestion.Body>
         <p>{question.description}</p>
-        <ExamQuestion.Answer
-          correctAnswer={question.answer}
-        ></ExamQuestion.Answer>
+        <ExamQuestion.Answer correctAnswer={question.answer} onCorrect={onCorrect}></ExamQuestion.Answer>
         <ExamQuestion.HintToggle />
       </ExamQuestion.Body>
-      <ExamQuestion.Hint answer={question.answer}>
-        {question.hint}
-      </ExamQuestion.Hint>
+      <ExamQuestion.Hint answer={question.answer}>{question.hint}</ExamQuestion.Hint>
     </ExamQuestion>
   );
 }

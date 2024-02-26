@@ -4,9 +4,9 @@ import { Accordion, Card } from "react-bootstrap";
 import { Stack, Button, TextField } from "@mui/material";
 import { useAccordionButton } from "react-bootstrap/AccordionButton";
 
-export default function ExamQuestion({ children, onRandomize, number = 1 }) {
+export default function ExamQuestion({ children, onRandomize, number = 1, id }) {
   return (
-    <div>
+    <div id={id} style={{ maxWidth: "800px" }}>
       <Accordion className="accordion" defaultActiveKey="1">
         <Card>
           <Card.Header>
@@ -32,12 +32,14 @@ ExamQuestion.Body = function Body({ children }) {
   );
 };
 
-ExamQuestion.Answer = function Answer({ correctAnswer }) {
+ExamQuestion.Answer = function Answer({ correctAnswer, onCorrect }) {
   const [answer, setAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState(true);
 
   function onSubmit() {
-    setIsCorrect(answer === correctAnswer);
+    const correct = answer === correctAnswer;
+    setIsCorrect(correct);
+    onCorrect(correct);
   }
 
   return (
@@ -59,7 +61,7 @@ ExamQuestion.Answer = function Answer({ correctAnswer }) {
       >
         Answer
       </TextField>
-      <Button type="button" onClick={onSubmit}>
+      <Button type="button" variant="outlined" color="primary" onClick={onSubmit}>
         Check
       </Button>
     </Stack>
@@ -67,11 +69,7 @@ ExamQuestion.Answer = function Answer({ correctAnswer }) {
 };
 
 ExamQuestion.HintToggle = function HintToggle() {
-  return (
-    <ContextAwareToggle eventKey="0">
-      Stuck? Review related resources or use a hint.
-    </ContextAwareToggle>
-  );
+  return <ContextAwareToggle eventKey="0">Stuck? Review related resources or use a hint.</ContextAwareToggle>;
 };
 
 ExamQuestion.Hint = function Hint({ children, answer }) {
@@ -102,12 +100,10 @@ const buttonLikeLinkStyle = {
  * Represents the button that triggers the accordion component opening or closing.
  */
 function ContextAwareToggle({ children, eventKey }) {
+  const accordion = useAccordionButton(eventKey);
+
   return (
-    <Button
-      style={buttonLikeLinkStyle}
-      type="button"
-      onClick={useAccordionButton(eventKey)}
-    >
+    <Button style={buttonLikeLinkStyle} type="button" onClick={accordion}>
       {children}
     </Button>
   );

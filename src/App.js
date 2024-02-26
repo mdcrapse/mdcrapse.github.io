@@ -1,8 +1,9 @@
-import react from "react";
+import react, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createTheme, ThemeProvider } from "@mui/material";
 import ExamQuestionnaire from "./ExamQuestionnaire";
 import { MathJaxContext } from "better-react-mathjax";
+import ExamOverview from "./ExamOverview";
 
 export default function App() {
   const theme = createTheme({
@@ -27,14 +28,17 @@ export default function App() {
     // },
   });
 
+  const [correct, setCorrect] = useState([]);
+
   return (
     <MathJaxContext>
       <ThemeProvider theme={theme}>
-        <div className="container my-5">
+        <div className="container my-5" style={{ display: "flex", justifyContent: "center" }}>
           <div className="d-flex flex-column">
-            <ExamQuestionnaire />
+            <ExamQuestionnaire onCorrect={setCorrect} />
           </div>
         </div>
+        <ExamOverview correct={correct} />
       </ThemeProvider>
     </MathJaxContext>
   );

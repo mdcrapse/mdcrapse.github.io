@@ -10,8 +10,8 @@ export default function ExamOverview({ correct }) {
   return (
     <AppBar color="primary" position="fixed" sx={{ top: "auto", bottom: 0 }}>
       <Toolbar variant="dense">
-        <Stack direction="column">
-          <Stack direction="row" style={{ alignItems: "center" }} gap={3}>
+        <Stack direction="column" style={{ width: "100%" }}>
+          <Stack direction="row" style={{ alignItems: "center", justifyContent: "center" }} gap={3}>
             <IconButton
               sx={{ alignSelf: "flex-start" }}
               color="inherit"
@@ -52,7 +52,7 @@ function ExamResultCards({ correct }) {
   return (
     <Grid
       container
-      style={{ paddingBottom: "5px" }}
+      style={{ paddingBottom: "5px", alignItems: "center", justifyContent: "center", width: "100%" }}
       direction="row"
       justifyContent="flex-start"
       alignItems="flex-start"

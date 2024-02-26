@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Accordion, Card } from "react-bootstrap";
 import { Stack, Button, TextField } from "@mui/material";
 import { useAccordionButton } from "react-bootstrap/AccordionButton";
+import ConfettiExplosion from "react-confetti-explosion";
 
 export default function ExamQuestion({ children, onRandomize, number = 1, id }) {
   return (
@@ -34,7 +35,7 @@ ExamQuestion.Body = function Body({ children }) {
 
 ExamQuestion.Answer = function Answer({ correctAnswer, onCorrect }) {
   const [answer, setAnswer] = useState("");
-  const [isCorrect, setIsCorrect] = useState(true);
+  const [isCorrect, setIsCorrect] = useState(false);
 
   function onSubmit() {
     const correct = answer === correctAnswer;
@@ -64,6 +65,7 @@ ExamQuestion.Answer = function Answer({ correctAnswer, onCorrect }) {
       <Button type="button" variant="outlined" color="primary" onClick={onSubmit}>
         Check
       </Button>
+      {isCorrect ? <ConfettiExplosion force={0.4} duration={2200} particleCount={30} width={400} /> : null}
     </Stack>
   );
 };

@@ -41,6 +41,10 @@ function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function insertChar(string, idx, char) {
+  return string.slice(0, idx) + char + string.slice(idx);
+}
+
 function questionFloatExponent() {
   let bits = randInt(1, 1 + 2 + 4).toString(2);
   bits = "0".repeat(3 - bits.length) + bits;
@@ -56,8 +60,15 @@ function questionFloatExponent() {
     answer: `${1 - (Math.pow(2, k - 1) - 1)}`,
     hint: (
       <MathJax dynamic={true}>
-        <span>{`\\(E = e - (2^{k-1}-1)\\) and \\(E = 1 - (2^{k-1}-1)\\).`}</span> <br />
-        <span>{`\\(k = ${k}\\) and \\(e = 0\\)`}</span> <br />
+        <span>{`1. Find the values.`}</span> <br />
+        <span>{`\\(e = 0\\) and \\(k = ${k}\\).`}</span> <br /> <br />
+
+        <span>{`2. Find the equation.`}</span> <br />
+        <span>{`If \\(e \\ne 0\\), value is normalized, use \\(E = e - (2^{k-1}-1)\\) (case 1).`}</span> <br />
+        <span>{`If \\(e = 0\\), value is denormalized, use \\(E = 1 - (2^{k-1}-1)\\) (case 2).`}</span> <br />
+        <span>{`Since \\(e = 0\\), value is denormalized (case 2), use \\(E = 1 - (2^{k-1}-1)\\).`}</span> <br /> <br />
+
+        <span>{`3. Find \\(E\\).`}</span> <br />
         <span>{`\\(E = 1 - (2^{k-1}-1)\\)`}</span> <br />
         <span>{`\\(= 1 - (2^{${k}-1}-1)\\)`}</span> <br />
         <span>{`\\(= 1 - (2^{${k - 1}}-1)\\)`}</span> <br />
@@ -97,7 +108,24 @@ function questionBinaryToFraction() {
   return {
     description: `Convert the binary value ${allBits} into a fraction. Your answer should be given as a fraction in the form "a/b", where a and b are (decimal) integers. If applicable, the fraction should be reduced.`,
     answer: answer,
-    hint: `TODO`,
+    hint: (
+      <MathJax dynamic={true}>
+        <span>{`Each binary digit is exactly half of the preceding binary digit.`}</span> <br />
+        <span>{`In other words, half of 1.00 \\((\\frac{1}{1})\\) is 0.10 \\((\\frac{1}{2})\\) and half of 0.10 is 0.01 \\((\\frac{1}{4})\\)`}</span>{" "}
+        <br />
+        <span>{`Add each binary digit to find the fraction.`}</span> <br />
+        <span>{`\\(${allBits}_b =
+          ${[...bits]
+            .map((bit, idx) => (bit === "1" ? `0.${insertChar("0".repeat(bits.length - 1), idx, "1")}_b` : null))
+            .filter((bit) => bit !== null)
+            .join(" + ")} =
+          ${[...bits]
+            .map((bit, idx) => (bit === "1" ? `\\frac{1}{${2 << idx}}` : null))
+            .filter((bit) => bit !== null)
+            .join(" + ")} =
+            \\frac{${n}}{${d}}\\)`}</span>{" "}
+      </MathJax>
+    ),
   };
 }
 

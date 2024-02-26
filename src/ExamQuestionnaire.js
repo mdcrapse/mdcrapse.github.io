@@ -62,12 +62,10 @@ function questionFloatExponent() {
       <MathJax dynamic={true}>
         <span>{`1. Find the values.`}</span> <br />
         <span>{`\\(e = 0\\) and \\(k = ${k}\\).`}</span> <br /> <br />
-
         <span>{`2. Find the equation.`}</span> <br />
         <span>{`If \\(e \\ne 0\\), value is normalized, use \\(E = e - (2^{k-1}-1)\\) (case 1).`}</span> <br />
         <span>{`If \\(e = 0\\), value is denormalized, use \\(E = 1 - (2^{k-1}-1)\\) (case 2).`}</span> <br />
         <span>{`Since \\(e = 0\\), value is denormalized (case 2), use \\(E = 1 - (2^{k-1}-1)\\).`}</span> <br /> <br />
-
         <span>{`3. Find \\(E\\).`}</span> <br />
         <span>{`\\(E = 1 - (2^{k-1}-1)\\)`}</span> <br />
         <span>{`\\(= 1 - (2^{${k}-1}-1)\\)`}</span> <br />
@@ -90,7 +88,17 @@ function questionFractionToBinary() {
   return {
     description: `Convert the fractional value ${n}/${d} into binary. Your answer should consist only of the characters 1, 0, and the binary point ('.'). You should have no leading 0s.`,
     answer: answer,
-    hint: `TODO`,
+    hint: (
+      <MathJax dynamic={true}>
+        <span>{`Dividing by a power of two is the same as bitshifting right by the exponent and dropping trailing 0s.`}</span> <br />
+        <span>{`\\(\\frac{${n}}{${d}} = \\frac{${n}}{2^${shift}} = ${n} >> ${shift} = ${bits}_b >> ${shift} = ${insertChar(
+          bits,
+          dotIdx,
+          "."
+        )}_b = ${answer}_b\\)`}</span>{" "}
+        <br />
+      </MathJax>
+    ),
   };
 }
 

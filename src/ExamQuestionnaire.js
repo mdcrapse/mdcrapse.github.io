@@ -2,10 +2,12 @@ import react, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ExamQuestion from "./ExamQuestion";
 import { Stack } from "react-bootstrap";
+import { MathJax } from "better-react-mathjax";
 
 export default function ExamQuestionnaire() {
   return (
     <Stack direction="column" gap={3}>
+      <ExamDynamicQuestion randomQuestion={questionFloatExponent} />
       <ExamDynamicQuestion randomQuestion={questionBinaryToFraction} />
       <ExamDynamicQuestion randomQuestion={questionFractionToBinary} />
     </Stack>
@@ -14,6 +16,34 @@ export default function ExamQuestionnaire() {
 
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function questionFloatExponent() {
+  let bits = randInt(1, 1 + 2 + 4).toString(2);
+  bits = "0".repeat(3 - bits.length) + bits;
+  const k = randInt(3, 5);
+
+  return {
+    description: `Consider an 8-bit floating-point format in which there are k=${k}
+      exponent bits and n=3 fraction bits. Given this format, consider the
+      bit representation consisting of 0${"0".repeat(k)}${bits}
+      What is E in this case? (Note: this question is not asking for the lowercase e, but rather
+      the uppercase E) You should give your answer as a decimal integer
+      with the sign only if the integer is negative.`,
+    answer: `${1 - (Math.pow(2, k - 1) - 1)}`,
+    hint: (
+      <MathJax>
+        <span>{`\\(E = e - (2^{k-1}-1)\\) and \\(E = 1 - (2^{k-1}-1)\\).`}</span>{" "}
+        <br />
+        <span>{`\\(k = ${k}\\) and \\(e = 0\\)`}</span> <br />
+        <span>{`\\(E = 1 - (2^{k-1}-1)\\)`}</span> <br />
+        <span>{`\\(= 1 - (2^{${k}-1}-1)\\)`}</span> <br />
+        <span>{`\\(= 1 - (2^{${k - 1}}-1)\\)`}</span> <br />
+        <span>{`\\(= 1 - (${Math.pow(2, k - 1)}-1)\\)`}</span> <br />
+        <span>{`\\(= ${1 - (Math.pow(2, k - 1) - 1)}\\)`}</span>
+      </MathJax>
+    ),
+  };
 }
 
 function questionFractionToBinary() {
@@ -30,7 +60,7 @@ function questionFractionToBinary() {
   return {
     description: `Convert the fractional value ${n}/${d} into binary. Your answer should consist only of the characters 1, 0, and the binary point ('.'). You should have no leading 0s.`,
     answer: answer,
-    hint: `Answer: ${answer}`,
+    hint: `TODO`,
   };
 }
 
@@ -48,7 +78,7 @@ function questionBinaryToFraction() {
   return {
     description: `Convert the binary value ${allBits} into a fraction. Your answer should be given as a fraction in the form "a/b", where a and b are (decimal) integers. If applicable, the fraction should be reduced.`,
     answer: answer,
-    hint: `Answer: ${answer}`,
+    hint: `TODO`,
   };
 }
 

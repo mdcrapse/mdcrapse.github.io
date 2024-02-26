@@ -2,6 +2,7 @@ import react from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createTheme, ThemeProvider } from "@mui/material";
 import ExamQuestionnaire from "./ExamQuestionnaire";
+import { MathJaxContext } from "better-react-mathjax";
 
 export default function App() {
   const theme = createTheme({
@@ -27,12 +28,14 @@ export default function App() {
   });
 
   return (
-    <ThemeProvider theme={theme}>
-      <div className="container my-5">
-        <div className="d-flex flex-column">
-          <ExamQuestionnaire />
+    <MathJaxContext>
+      <ThemeProvider theme={theme}>
+        <div className="container my-5">
+          <div className="d-flex flex-column">
+            <ExamQuestionnaire />
+          </div>
         </div>
-      </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </MathJaxContext>
   );
 }
